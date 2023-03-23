@@ -20,9 +20,12 @@ _DOCKER_ARGS=\
 	--network=host \
 	$(DOCKER_ARGS)
 
-# Command for dockerization
 docker-build:
 	docker buildx build . --platform=linux/amd64 -f docker/$(PROCESS)/$(FILE) -t $(IMAGE_NAME):$(TAG_NAME)
+
+# Local build doesn't use cross-platform
+docker-build-local:
+	docker build . --platform=linux/amd64 -f docker/$(PROCESS)/$(FILE) -t $(IMAGE_NAME):$(TAG_NAME)
 
 docker-run:
 	docker run --rm -it --name=$(CONTAINER_NAME) \

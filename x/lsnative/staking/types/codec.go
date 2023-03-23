@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	"github.com/cosmos/cosmos-sdk/x/authz"
@@ -20,14 +21,15 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	// legacy.RegisterAminoMsg(cdc, &MsgUndelegate{}, "cosmos-sdk/MsgUndelegate")
 	// legacy.RegisterAminoMsg(cdc, &MsgBeginRedelegate{}, "cosmos-sdk/MsgBeginRedelegate")
 	// legacy.RegisterAminoMsg(cdc, &MsgCancelUnbondingDelegation{}, "cosmos-sdk/MsgCancelUnbondingDelegation")
-	legacy.RegisterAminoMsg(cdc, &MsgTokenizeShares{}, "cosmos-sdk/MsgTokenizeShares")
-	legacy.RegisterAminoMsg(cdc, &MsgRedeemTokensforShares{}, "cosmos-sdk/MsgRedeemTokensforShares")
-	legacy.RegisterAminoMsg(cdc, &MsgTransferTokenizeShareRecord{}, "cosmos-sdk/MsgTransferTokenizeShareRecord")
+
+	legacy.RegisterAminoMsg(cdc, &MsgTokenizeShares{}, "lsm/MsgTokenizeShares")
+	legacy.RegisterAminoMsg(cdc, &MsgRedeemTokensforShares{}, "lsm/MsgRedeemTokensforShares")
+	legacy.RegisterAminoMsg(cdc, &MsgTransferTokenizeShareRecord{}, "lsm/MsgTransferTokenizeShareRecord")
 
 	// cdc.RegisterInterface((*isStakeAuthorization_Validators)(nil), nil)
-	// cdc.RegisterConcrete(&StakeAuthorization_AllowList{}, "cosmos-sdk/StakeAuthorization/AllowList", nil)
-	// cdc.RegisterConcrete(&StakeAuthorization_DenyList{}, "cosmos-sdk/StakeAuthorization/DenyList", nil)
-	// cdc.RegisterConcrete(&StakeAuthorization{}, "cosmos-sdk/StakeAuthorization", nil)
+	// legacy.RegisterAminoMsg(cdc, &StakeAuthorization_AllowList{}, "cosmos-sdk/StakeAuthorization/AllowList")
+	// legacy.RegisterAminoMsg(cdc, &StakeAuthorization_DenyList{}, "cosmos-sdk/StakeAuthorization/DenyList")
+	// legacy.RegisterAminoMsg(cdc, &StakeAuthorization{}, "cosmos-sdk/StakeAuthorization")
 }
 
 // RegisterInterfaces registers the x/staking interfaces types with the interface registry

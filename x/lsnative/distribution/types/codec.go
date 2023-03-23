@@ -18,10 +18,10 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	// legacy.RegisterAminoMsg(cdc, &MsgWithdrawValidatorCommission{}, "cosmos-sdk/MsgWithdrawValCommission")
 	// legacy.RegisterAminoMsg(cdc, &MsgSetWithdrawAddress{}, "cosmos-sdk/MsgModifyWithdrawAddress")
 	// legacy.RegisterAminoMsg(cdc, &MsgFundCommunityPool{}, "cosmos-sdk/MsgFundCommunityPool")
-	// cdc.RegisterConcrete(&CommunityPoolSpendProposal{}, "cosmos-sdk/CommunityPoolSpendProposal", nil)
+	// legacy.RegisterAminoMsg(cdc, &CommunityPoolSpendProposal{}, "cosmos-sdk/CommunityPoolSpendProposal")
 
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawTokenizeShareRecordReward{}, "cosmos-sdk/MsgWithdrawTokenizeShareRecordReward")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawAllTokenizeShareRecordReward{}, "cosmos-sdk/MsgWithdrawAllTokenizeShareRecordReward")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawTokenizeShareRecordReward{}, "lsm/MsgWithdrawTokenizeShareReward")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawAllTokenizeShareRecordReward{}, "lsm/MsgWithdrawAllTokenizeShareReward")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

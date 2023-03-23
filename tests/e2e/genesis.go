@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/persistenceOne/pstake-native/v2/x/lsnative/genutil"
+	genutiltypes "github.com/persistenceOne/pstake-native/v2/x/lsnative/genutil/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 )
 

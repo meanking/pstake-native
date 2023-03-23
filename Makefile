@@ -203,6 +203,9 @@ test-cover:
 test-e2e:
 	$(MAKE) test-cover  TEST_TARGET=./tests/e2e/...
 
+test-e2e-docker-build:
+	$(MAKE) -e PROCESS=pstake-e2e docker-build-local
+
 benchmark:
 	@go test -mod=readonly -bench=. $(TEST_TARGET) $(TEST_ARGS)
 

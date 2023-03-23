@@ -19,9 +19,9 @@ import (
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+	genutiltypes "github.com/persistenceOne/pstake-native/v2/x/lsnative/genutil/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
@@ -272,6 +272,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		runOpts := &dockertest.RunOptions{
 			Name:      val.instanceName(),
 			NetworkID: s.dkrNet.Network.ID,
+			Platform:  "linux/amd64",
 			Mounts: []string{
 				fmt.Sprintf("%s/:/root/.pstaked", val.configDir()),
 			},
@@ -304,6 +305,18 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
 	s.Require().NoError(err)
 
+	go func() {
+		time.Sleep(10 * time.Second)
+		_ = s.dkrPool.Client.Logs(docker.LogsOptions{
+			Context:      context.Background(),
+			Container:    s.valResources[c.id][0].Container.ID,
+			OutputStream: os.Stderr,
+			ErrorStream:  os.Stderr,
+			Stdout:       true,
+			Stderr:       true,
+		})
+	}()
+
 	s.Require().Eventually(
 		func() bool {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -321,9 +334,9 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 
 			return true
 		},
-		5*time.Minute,
+		2*time.Minute,
 		time.Second,
-		"PStake node failed to produce blocks",
+		"PStake node failed to produce blocks under 2 minutes",
 	)
 }
 
@@ -349,7 +362,7 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 		&dockertest.RunOptions{
 			Name:       fmt.Sprintf("%s-%s-relayer", s.chainA.id, s.chainB.id),
 			Repository: "ghcr.io/cosmos/hermes-e2e",
-			Tag:        "0.12.0",
+			Tag:        "0.13.0",
 			NetworkID:  s.dkrNet.Network.ID,
 			Mounts: []string{
 				fmt.Sprintf("%s/:/root/hermes", hermesCfgPath),
@@ -357,6 +370,7 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 			PortBindings: map[docker.Port][]docker.PortBinding{
 				"3031/tcp": {{HostIP: "", HostPort: "3036"}},
 			},
+			Platform: "linux/amd64",
 			Env: []string{
 				fmt.Sprintf("PSTAKE_A_E2E_CHAIN_ID=%s", s.chainA.id),
 				fmt.Sprintf("PSTAKE_B_E2E_CHAIN_ID=%s", s.chainB.id),
@@ -367,13 +381,24 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 			},
 			Entrypoint: []string{
 				"sh",
-				"-c",
-				"chmod +x /root/hermes/hermes_bootstrap.sh && /root/hermes/hermes_bootstrap.sh",
+				"/root/hermes/hermes_bootstrap.sh",
 			},
 		},
 		noRestart,
 	)
 	s.Require().NoError(err)
+
+	go func() {
+		time.Sleep(10 * time.Second)
+		_ = s.dkrPool.Client.Logs(docker.LogsOptions{
+			Context:      context.Background(),
+			Container:    s.hermesResource.Container.ID,
+			OutputStream: os.Stderr,
+			ErrorStream:  os.Stderr,
+			Stdout:       true,
+			Stderr:       true,
+		})
+	}()
 
 	endpoint := fmt.Sprintf("http://%s/state", s.hermesResource.GetHostPort("3031/tcp"))
 	s.Require().Eventually(
@@ -400,7 +425,7 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 
 			return status == "success" && len(result["chains"].([]interface{})) == 2
 		},
-		5*time.Minute,
+		2*time.Minute,
 		time.Second,
 		"hermes relayer not healthy",
 	)

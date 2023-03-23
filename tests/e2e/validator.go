@@ -17,8 +17,8 @@ import (
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	txsigning "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/persistenceOne/pstake-native/v2/x/lsnative/genutil"
+	stakingtypes "github.com/persistenceOne/pstake-native/v2/x/lsnative/staking/types"
 	tmcfg "github.com/tendermint/tendermint/config"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/p2p"
@@ -176,9 +176,6 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 		MaxChangeRate: sdk.MustNewDecFromStr("0.01"),
 	}
 
-	// get the initial validator min self delegation
-	minSelfDelegation, _ := sdk.NewIntFromString("1")
-
 	valPubKey, err := cryptocodec.FromTmPubKeyInterface(v.consensusKey.PubKey)
 	if err != nil {
 		return nil, err
@@ -193,7 +190,6 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 		amount,
 		description,
 		commissionRates,
-		minSelfDelegation,
 	)
 }
 

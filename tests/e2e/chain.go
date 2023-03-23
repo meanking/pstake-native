@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	stakingtypes "github.com/persistenceOne/pstake-native/v2/x/lsnative/staking/types"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 
 	pstakeApp "github.com/persistenceOne/pstake-native/v2/app"
